@@ -4,7 +4,7 @@ from pyrogram import Client, filters,emoji
 from pyrogram.types import Message
 import os
 import math
-from plugins.commands import commands
+from Plugins.commands import commands
 import time
  
 
