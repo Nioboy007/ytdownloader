@@ -6,11 +6,16 @@ import os
 import math
 from Plugins.commands import commands
 import time
+import requests
 from pytube import YouTube
+import time
+import pytube
+import re
+from pytube import Playlist
 
 START_TEXT, HELP_TEXT, UPLOAD_START, ABOUT_TEXT, START_BUTTONS, result_buttons, HELP_BUTTONS, ABOUT_BUTTONS, SOURCE_TEXT, SOURCE_BUTTONS, result_text = commands()
 
-import requests
+
 HB = Client(
     "YOUTUBE Bot",
     bot_token=os.environ.get("BOT_TOKEN", "6999401413:AAHgF1ZpUsCT5MgWX1Wky7GbegyeHvzi2AU"),
@@ -20,6 +25,8 @@ HB = Client(
 
 VIDEO_REGEX = r'(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/|(?:youtube\.com\/shorts\/))(?P<video_id>[a-zA-Z0-9_-]{11})'
 PLAYLIST_REGEX = r'(.*)youtube.com/(.*)[&|?]list=(?P<playlist>[^&]*)(.*)'
+start_time = time.time()
+
 
 
 @HB.on_message(filters.command(["start"]))
@@ -161,7 +168,7 @@ async def ytdl(_, message):
    hd = f"{int(format_bytes(ythd.filesize)[0]):.2f}{format_bytes(ythd.filesize)[1]}"
    low = f"{int(format_bytes(ytlow.filesize)[0]):.2f}{format_bytes(ytlow.filesize)[1]}"
    
-   import requests
+   
    result_buttons2 = InlineKeyboardMarkup(
     [[
         InlineKeyboardButton('🎬720P ' +' ⭕️ '+ hd, callback_data='high'),
@@ -180,8 +187,7 @@ async def ytdl(_, message):
             quote=True,
     
     )
-import time
-start_time = time.time()
+
 
 
 @HB.on_callback_query()
@@ -273,10 +279,7 @@ async def cb_data(bot, update):
     
     else:
         await update.message.delete()
-import pytube
-import re
-from pytube import YouTube
-from pytube import Playlist
+
 
 @HB.on_message(filters.text & filters.private)
 async def ytdl(_, update):
@@ -292,5 +295,5 @@ async def ytdl(_, update):
             video = phd.download(),
             
         )
-print("HB")
+print("Private Botz On the Run HOHOHO *LOL 😂")
 HB.run()
