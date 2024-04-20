@@ -11,6 +11,7 @@ from pytube import YouTube
 import time
 import pytube
 import re
+from helpers.thumbnail import take_screen_shot
 from pytube import Playlist
 
 START_TEXT, HELP_TEXT, UPLOAD_START, ABOUT_TEXT, START_BUTTONS, result_buttons, HELP_BUTTONS, ABOUT_BUTTONS, SOURCE_TEXT, SOURCE_BUTTONS, result_text = commands()
@@ -27,6 +28,8 @@ VIDEO_REGEX = r'(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&
 PLAYLIST_REGEX = r'(.*)youtube.com/(.*)[&|?]list=(?P<playlist>[^&]*)(.*)'
 start_time = time.time()
 
+
+thumbnail = await take_screen_shot(download_directory, os.path.dirname(download_directory), random.randint(0, duration - 1))
 
 
 @HB.on_message(filters.command(["start"]))
