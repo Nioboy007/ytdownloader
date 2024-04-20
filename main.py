@@ -207,59 +207,54 @@ async def cb_data(bot, update):
                     progress_args=(
                         UPLOAD_START,
                         update.message,
-                        start_time
-                    )
-      )
-        await update.message.delete()
-     except:
-        await HB.send_message(
-            chat_id = update.message.chat.id,
-            text="**😔 1080P QUALITY IS NOT AVAILABLE\n CHOOSE ANY OTHER QUALITIES**")    
-    
-    elif update.data == '360p':
-     try:
-      await  HB.send_video(
-        chat_id = update.message.chat.id, 
-        video = ytlow.download(),
-        caption=result_text,
-        reply_markup=result_buttons,
-       progress=progress_for_pyrogram,
-                    progress_args=(
-                        UPLOAD_START,
-                        update.message,
-                        start_time
-                    )
-        )
-      await update.message.delete()
+@HB.on_callback_query()
+async def cb_data(bot, update):
+    try:
+        if update.data == 'high':  # For example, when the user selects the high resolution option
+            try:
+                # Download the video file in high resolution
+                video_file_path = os.path.join(download_dir, f"{video_title}_high.mp4")
+                ythd.download(output_path=download_dir, filename=f"{video_title}_high")
+                # Send the video to the chat using HB.send_video()
+                await HB.send_video(chat_id=update.message.chat.id, video=video_file_path, caption=result_text,
+                                    progress=progress_for_pyrogram, progress_args=(UPLOAD_START, update.message, start_time))
+                await update.message.delete()
+            except Exception as e:
+                await HB.send_message(chat_id=update.message.chat.id,
+                                      text="😔 1080P QUALITY IS NOT AVAILABLE\n CHOOSE ANY OTHER QUALITIES")
 
-     except:
-        await HB.send_message(
-            chat_id = update.message.chat.id,
-            text="**😔 360P QUALITY IS NOT AVAILABLE \n CHOOSE ANY OTHER QUALITIES**")  
+        elif update.data == '360p':  # For example, when the user selects the 360p resolution option
+            try:
+                # Download the video file in 360p resolution
+                video_file_path = os.path.join(download_dir, f"{video_title}_360p.mp4")
+                ytlow.download(output_path=download_dir, filename=f"{video_title}_360p")
+                # Send the video to the chat using HB.send_video()
+                await HB.send_video(chat_id=update.message.chat.id, video=video_file_path, caption=result_text,
+                                    progress=progress_for_pyrogram, progress_args=(UPLOAD_START, update.message, start_time))
+                await update.message.delete()
+            except Exception as e:
+                await HB.send_message(chat_id=update.message.chat.id,
+                                      text="😔 360P QUALITY IS NOT AVAILABLE\n CHOOSE ANY OTHER QUALITIES")
+        # Add other conditions as needed for different resolution options or actions
 
-    elif update.data == 'audio':
-        await  HB.send_audio(
-        chat_id = update.message.chat.id,
-        audio=f"{str(yt.title)}.mp3",
-        caption=result_text,
-        duration=yt.length,
-        reply_markup=result_buttons,
-        progress=progress_for_pyrogram,
-                    progress_args=(
-                        UPLOAD_START,
-                        update.message,
-                        start_time
-                    )
-      )
-        await update.message.delete()
+        elif update.data == "thumbnail":
+            await HB.send_photo(chat_id=update.message.chat.id, photo=thumb, caption="**JOIN @TELSABOTS**")
+            await update.message.delete()
 
-    elif update.data == 'thumbnail':
-        await HB.send_photo(
-            chat_id = update.message.chat.id, 
-            photo=thumb,
-            caption="**JOIN @TELSABOTS**"
-        )
-        await update.message.delete()    
+        elif update.data in ["home", "help", "about"]:
+            await update.message.edit_text(
+                text=START_TEXT.format(update.from_user.mention),
+                disable_web_page_preview=True,
+                reply_markup=START_BUTTONS if update.data == "home" else
+                             HELP_BUTTONS if update.data == "help" else
+                             ABOUT_BUTTONS
+            )
+
+        else:
+            await update.message.delete()
+
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
 
     elif update.data == "home":
         await update.message.edit_text(
