@@ -1,4 +1,4 @@
-import os 
+oimport os 
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup 
 from pyrogram import Client, filters,emoji
 from pyrogram.types import Message
@@ -165,8 +165,6 @@ async def ytdl(_, message):
    file = yt.streams.filter(only_audio=True).first()
    ytaudio = yt.streams.filter(only_audio=True).first()
    download = ytaudio.download(filename=f"{str(yt.title)}")
-   downloadhd = ythd.download(filename=f"{str(yt.title)}")
-   downloadlow = ytlow.download(filename=f"{str(yt.title)}") 
    rename = os.rename(download, f"{str(yt.title)}.mp3")
    audio_size = f"{int(format_bytes(ytaudio.filesize)[0]):.2f}{format_bytes(ytaudio.filesize)[1]}"
    hd = f"{int(format_bytes(ythd.filesize)[0]):.2f}{format_bytes(ythd.filesize)[1]}"
@@ -191,7 +189,8 @@ async def ytdl(_, message):
             quote=True,
     
     )
-
+import time
+start_time = time.time()
 
 
 @HB.on_callback_query()
@@ -201,7 +200,7 @@ async def cb_data(bot, update):
      try:
         await  HB.send_video(
             chat_id = update.message.chat.id, 
-            video = f"{str(yt.title)}",
+            video = ythd.download(),
             caption=result_text,
             reply_markup=result_buttons,
             progress=progress_for_pyrogram,
@@ -221,7 +220,7 @@ async def cb_data(bot, update):
      try:
       await  HB.send_video(
         chat_id = update.message.chat.id, 
-        video = f"{str(yt.title)}",
+        video = ytlow.download(),
         caption=result_text,
         reply_markup=result_buttons,
        progress=progress_for_pyrogram,
@@ -283,6 +282,10 @@ async def cb_data(bot, update):
     
     else:
         await update.message.delete()
+import pytube
+import re
+from pytube import YouTube
+from pytube import Playlist
 
 @HB.on_message(filters.text & filters.private)
 async def ytdl(_, update):
@@ -298,7 +301,5 @@ async def ytdl(_, update):
             video = phd.download(),
             
     )
-        
-
 print("Private Botz On the Run HOHOHO *LOL 😂")
 HB.run()
