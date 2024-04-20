@@ -6,6 +6,7 @@ import os
 import math
 from Plugins.commands import commands
 import time
+from pytube import YouTube
 
 START_TEXT, HELP_TEXT, UPLOAD_START, ABOUT_TEXT, START_BUTTONS, result_buttons, HELP_BUTTONS, ABOUT_BUTTONS, SOURCE_TEXT, SOURCE_BUTTONS, result_text = commands()
 
@@ -16,6 +17,9 @@ HB = Client(
     api_id=int(os.environ.get("API_ID", "10471716")),
     api_hash=os.environ.get("API_HASH", "f8a1b21a13af154596e2ff5bed164860")
 )
+
+VIDEO_REGEX = r'(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/|(?:youtube\.com\/shorts\/))(?P<video_id>[a-zA-Z0-9_-]{11})'
+PLAYLIST_REGEX = r'(.*)youtube.com/(.*)[&|?]list=(?P<playlist>[^&]*)(.*)'
 
 
 @HB.on_message(filters.command(["start"]))
@@ -129,9 +133,8 @@ def TimeFormatter(milliseconds: int) -> str:
     return tmp[:-2]
 
 
-from pytube import YouTube
-VIDEO_REGEX = r'(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})'
-PLAYLIST_REGEX = r'(.*)youtube.com/(.*)[&|?]list=(?P<playlist>[^&]*)(.*)'
+
+
 @HB.on_message(filters.regex(VIDEO_REGEX))
 async def ytdl(_, message):
    l = message.text.split()
