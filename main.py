@@ -200,6 +200,7 @@ async def cb_data(bot, update):
                 chat_id=update.message.chat.id,
                 video=ythd.download(),
                 caption=result_text,
+                thumb=thumb,
                 reply_markup=result_buttons,
                 progress=progress_for_pyrogram,
                 progress_args=(
@@ -227,6 +228,7 @@ async def cb_data(bot, update):
                 video=ytlow.download(),
                 caption=result_text,
                 reply_markup=result_buttons,
+                thumb=thumb,
                 progress=progress_for_pyrogram,
                 progress_args=(
                     UPLOAD_START,
