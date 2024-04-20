@@ -195,7 +195,6 @@ async def ytdl(_, message):
 
 
 
-
 @HB.on_callback_query()
 async def cb_data(bot, update):
     try:
@@ -244,43 +243,7 @@ async def cb_data(bot, update):
 
     except Exception as e:
         print(f"An error occurred: {str(e)}")
+        
 
-    elif update.data == "home":
-        await update.message.edit_text(
-            text=START_TEXT.format(update.from_user.mention),
-            disable_web_page_preview=True,
-            reply_markup=START_BUTTONS
-        )
-    elif update.data == "help":
-        await update.message.edit_text(
-            text=HELP_TEXT,
-            disable_web_page_preview=True,
-            reply_markup=HELP_BUTTONS
-        )
-    elif update.data == "about":
-        await update.message.edit_text(
-            text=ABOUT_TEXT,
-            disable_web_page_preview=True,
-            reply_markup=ABOUT_BUTTONS
-        )
-    
-    else:
-        await update.message.delete()
-
-
-@HB.on_message(filters.text & filters.private)
-async def ytdl(_, update):
-   purl=update.text
-   pyt = Playlist(purl)
-  
-   for video in pyt.videos:
-    phd =video.streams.get_highest_resolution()
-    
-    await  HB.send_video(
-            chat_id = update.chat.id, 
-            caption=(f"⭕️ PLAYLIST : "+ pyt.title + "\n📥 DOWNLOADED " + "\n✅ JOIN @TELSABOTS" ),
-            video = phd.download(),
-            
-        )
 print("Private Botz On the Run HOHOHO *LOL 😂")
 HB.run()
