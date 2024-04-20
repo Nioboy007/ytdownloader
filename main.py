@@ -239,7 +239,7 @@ async def cb_data(bot, update):
             text="**😔 360P QUALITY IS NOT AVAILABLE \n CHOOSE ANY OTHER QUALITIES**") 
          
     elif update.data == 'audio':
-        audio_file_path = os.path.join("downloads", f"{yt.title}.mp3")
+        audio_file_path = os.path.join("downloads", f"{str(yt.title)}.mp3")
         await HB.send_audio(
             chat_id=update.message.chat.id,
             audio=audio_file_path,
