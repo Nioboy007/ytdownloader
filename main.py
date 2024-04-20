@@ -165,6 +165,8 @@ async def ytdl(_, message):
    file = yt.streams.filter(only_audio=True).first()
    ytaudio = yt.streams.filter(only_audio=True).first()
    download = ytaudio.download(filename=f"{str(yt.title)}")
+   downloadhd = ythd.download(filename=f"{str(yt.title)}")
+   downloadlow = ytlow.download(filename=f"{str(yt.title)}") 
    rename = os.rename(download, f"{str(yt.title)}.mp3")
    audio_size = f"{int(format_bytes(ytaudio.filesize)[0]):.2f}{format_bytes(ytaudio.filesize)[1]}"
    hd = f"{int(format_bytes(ythd.filesize)[0]):.2f}{format_bytes(ythd.filesize)[1]}"
@@ -199,7 +201,7 @@ async def cb_data(bot, update):
      try:
         await  HB.send_video(
             chat_id = update.message.chat.id, 
-            video = ythd.download(),
+            video = f"{str(yt.title)},
             caption=result_text,
             reply_markup=result_buttons,
             progress=progress_for_pyrogram,
@@ -219,7 +221,7 @@ async def cb_data(bot, update):
      try:
       await  HB.send_video(
         chat_id = update.message.chat.id, 
-        video = ytlow.download(),
+        video = f"{str(yt.title)},
         caption=result_text,
         reply_markup=result_buttons,
        progress=progress_for_pyrogram,
