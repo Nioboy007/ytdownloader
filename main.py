@@ -1,4 +1,4 @@
-oimport os 
+import os 
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup 
 from pyrogram import Client, filters,emoji
 from pyrogram.types import Message
