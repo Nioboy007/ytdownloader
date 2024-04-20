@@ -167,13 +167,13 @@ async def ytdl(_, message):
     if not os.path.exists(download_dir):
         os.makedirs(download_dir)
     video_title = yt.title
-   file = yt.streams.filter(only_audio=True).first()
-   ytaudio = yt.streams.filter(only_audio=True).first()
-   audio_size = f"{int(format_bytes(ytaudio.filesize)[0]):.2f}{format_bytes(ytaudio.filesize)[1]}"
-   hd = f"{int(format_bytes(ythd.filesize)[0]):.2f}{format_bytes(ythd.filesize)[1]}"
-   low = f"{int(format_bytes(ytlow.filesize)[0]):.2f}{format_bytes(ytlow.filesize)[1]}"
-   
-   
+    file = yt.streams.filter(only_audio=True).first()  # Correctly indented line
+    ytaudio = yt.streams.filter(only_audio=True).first()
+    audio_size = f"{int(format_bytes(ytaudio.filesize)[0]):.2f}{format_bytes(ytaudio.filesize)[1]}"
+    hd = f"{int(format_bytes(ythd.filesize)[0]):.2f}{format_bytes(ythd.filesize)[1]}"
+    low = f"{int(format_bytes(ytlow.filesize)[0]):.2f}{format_bytes(ytlow.filesize)[1]}"
+
+
    result_buttons2 = InlineKeyboardMarkup(
     [[
         InlineKeyboardButton('🎬720P ' +' ⭕️ '+ hd, callback_data='high'),
