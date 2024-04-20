@@ -195,7 +195,7 @@ start_time = time.time()
 
 
 @HB.on_callback_query()
-async def cb_data(bot, update, audio_path):                     
+async def cb_data(bot, update):                     
     
     if update.data == 'high':
      try:
@@ -236,12 +236,13 @@ async def cb_data(bot, update, audio_path):
      except:
         await HB.send_message(
             chat_id = update.message.chat.id,
-            text="**😔 360P QUALITY IS NOT AVAILABLE \n CHOOSE ANY OTHER QUALITIES**")  
-
+            text="**😔 360P QUALITY IS NOT AVAILABLE \n CHOOSE ANY OTHER QUALITIES**") 
+         
+    audio_file_path = os.path.join("downloads", f"{yt.title}.mp3")
     elif update.data == 'audio':
         await  HB.send_audio(
         chat_id = update.message.chat.id,
-        audio=audio_path,
+        audio=audio_file_path,
         caption=result_text,
         duration=yt.length,
         reply_markup=result_buttons,
