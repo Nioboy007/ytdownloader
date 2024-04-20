@@ -193,8 +193,6 @@ async def ytdl(_, message):
 import time
 start_time = time.time()
 
-audio_path = os.path.join(output_directory, f"{str(yt.title)}.mp3")
-
 
 @HB.on_callback_query()
 async def cb_data(bot, update):                     
