@@ -195,7 +195,7 @@ start_time = time.time()
 
 
 @HB.on_callback_query()
-async def cb_data(bot, update):                     
+async def cb_data(bot, update, audio_path):                     
     
     if update.data == 'high':
      try:
