@@ -162,8 +162,9 @@ async def ytdl(_, message):
    chat_id =message.chat.id
    thumb = yt.thumbnail_url
    video_title = yt.title
-   thumb_filename, _ = urllib.request.urlretrieve(thumb)  # Download thumbnail from URL
-   
+   thumb_extension = ".jpeg"
+   custom_thumb_filename = f"{video_title}{thumb_extension}"
+   thumb_filename, _ = urllib.request.urlretrieve(thumb, custom_thumb_filename)
    ythd = yt.streams.get_highest_resolution()
    ytlow = yt.streams.get_by_resolution(resolution ='360p')
    file = yt.streams.filter(only_audio=True).first()
