@@ -161,6 +161,7 @@ async def ytdl(_, message):
    yt = YouTube(url)
    chat_id =message.chat.id
    thumb = yt.thumbnail_url
+   video_title = yt.title
    thumb_filename, _ = urllib.request.urlretrieve(thumb)  # Download thumbnail from URL
    
    ythd = yt.streams.get_highest_resolution()
