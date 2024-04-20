@@ -160,11 +160,13 @@ async def ytdl(_, message):
    yt = YouTube(url)
    chat_id =message.chat.id
    thumb = yt.thumbnail_url
+   output_directory = "downloads/"
    ythd = yt.streams.get_highest_resolution()
    ytlow = yt.streams.get_by_resolution(resolution ='360p')
    ytaudio = yt.streams.filter(only_audio=True).first()
-   download = ytaudio.download(filename=f"{str(yt.title)}")
-   rename = os.rename(download, f"{str(yt.title)}.mp3")
+   download_path = ytaudio.download(output_path=output_directory, filename=f"{str(yt.title)}")
+   rename = os.rename(download_path, f"{str(yt.title)}.mp3")
+   audio_path = os.path.join(output_directory, f"{str(yt.title)}.mp3")
    audio_size = f"{int(format_bytes(ytaudio.filesize)[0]):.2f}{format_bytes(ytaudio.filesize)[1]}"
    hd = f"{int(format_bytes(ythd.filesize)[0]):.2f}{format_bytes(ythd.filesize)[1]}"
    low = f"{int(format_bytes(ytlow.filesize)[0]):.2f}{format_bytes(ytlow.filesize)[1]}"
@@ -239,7 +241,7 @@ async def cb_data(bot, update):
     elif update.data == 'audio':
         await  HB.send_audio(
         chat_id = update.message.chat.id,
-        audio=f"{str(yt.title)}.mp3",
+        audio=audio_path,
         caption=result_text,
         duration=yt.length,
         reply_markup=result_buttons,
