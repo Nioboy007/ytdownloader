@@ -201,7 +201,7 @@ async def cb_data(bot, update):
         await  HB.send_video(
             chat_id = update.message.chat.id, 
             video = ythd.download(),
-            thumbnail = thumb
+            thumbnail = thumb,
             caption=result_text,
             reply_markup=result_buttons,
             progress=progress_for_pyrogram,
@@ -223,7 +223,7 @@ async def cb_data(bot, update):
         chat_id = update.message.chat.id, 
         video = ytlow.download(),
         caption=result_text,
-         thumbnail = thumb
+         thumbnail = thumb,
         reply_markup=result_buttons,
        progress=progress_for_pyrogram,
                     progress_args=(
