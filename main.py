@@ -192,72 +192,105 @@ async def ytdl(_, message):
 
 
 @HB.on_callback_query()
-async def cb_data(bot, update):                     
-    
+async def cb_data(bot, update):
+   
     if update.data == 'high':
-     try:
-        await  HB.send_video(
-            chat_id = update.message.chat.id, 
-            video = ythd.download(),
-            caption=result_text,
-            reply_markup=result_buttons,
-            progress=progress_for_pyrogram,
-                    progress_args=(
-                        UPLOAD_START,
-                        update.message,
-                        start_time
-                    )
-      )
-        await update.message.delete()
-     except:
-        await HB.send_message(
-            chat_id = update.message.chat.id,
-            text="**😔 1080P QUALITY IS NOT AVAILABLE\n CHOOSE ANY OTHER QUALITIES**")    
-    
-    elif update.data == '360p':
-     try:
-      await  HB.send_video(
-        chat_id = update.message.chat.id, 
-        video = ytlow.download(),
-        caption=result_text,
-        reply_markup=result_buttons,
-       progress=progress_for_pyrogram,
-                    progress_args=(
-                        UPLOAD_START,
-                        update.message,
-                        start_time
-                    )
-        )
-      await update.message.delete()
+        try:
+            await HB.send_video(
+                chat_id=update.message.chat.id,
+                video=ythd.download(),
+                caption=result_text,
+                reply_markup=result_buttons,
+                progress=progress_for_pyrogram,
+                progress_args=(
+                    UPLOAD_START,
+                    update.message,
+                    start_time
+                )
+            )
+            await update.message.delete()
+        except Exception as e:
+            error_message = f"Error occurred: {str(e)}"
+            await HB.send_message(
+                chat_id=update.message.chat.id,
+                text="**😔 1080P QUALITY IS NOT AVAILABLE\n CHOOSE ANY OTHER QUALITIES**"
+            )
+            await HB.send_message(
+                chat_id=update.message.chat.id,
+                text=error_message
+            )
 
-     except:
-        await HB.send_message(
-            chat_id = update.message.chat.id,
-            text="**😔 360P QUALITY IS NOT AVAILABLE \n CHOOSE ANY OTHER QUALITIES**")  
+    elif update.data == '360p':
+        try:
+            await HB.send_video(
+                chat_id=update.message.chat.id,
+                video=ytlow.download(),
+                caption=result_text,
+                reply_markup=result_buttons,
+                progress=progress_for_pyrogram,
+                progress_args=(
+                    UPLOAD_START,
+                    update.message,
+                    start_time
+                )
+            )
+            await update.message.delete()
+        except Exception as e:
+            error_message = f"Error occurred: {str(e)}"
+            await HB.send_message(
+                chat_id=update.message.chat.id,
+                text="**😔 360P QUALITY IS NOT AVAILABLE \n CHOOSE ANY OTHER QUALITIES**"
+            )
+            await HB.send_message(
+                chat_id=update.message.chat.id,
+                text=error_message
+            )
 
     elif update.data == 'audio':
-        await  HB.send_audio(
-        chat_id = update.message.chat.id,
-        audio=f"{str(yt.title)}.mp3",
-        caption=result_text,
-        duration=yt.length,
-        reply_markup=result_buttons,
-        progress=progress_for_pyrogram,
-                    progress_args=(
-                        UPLOAD_START,
-                        update.message,
-                        start_time
-                    )
-      )
-        await update.message.delete()
+        try:
+            await HB.send_audio(
+                chat_id=update.message.chat.id,
+                audio=f"{str(yt.title)}.mp3",
+                caption=result_text,
+                duration=yt.length,
+                reply_markup=result_buttons,
+                progress=progress_for_pyrogram,
+                progress_args=(
+                    UPLOAD_START,
+                    update.message,
+                    start_time
+                )
+            )
+            await update.message.delete()
+        except Exception as e:
+            error_message = f"Error occurred: {str(e)}"
+            await HB.send_message(
+                chat_id=update.message.chat.id,
+                text="**Error occurred while sending audio**"
+            )
+            await HB.send_message(
+                chat_id=update.message.chat.id,
+                text=error_message
+            )
 
     elif update.data == 'thumbnail':
-        await HB.send_photo(
-            chat_id = update.message.chat.id, 
-            photo=thumb,
-            caption="**JOIN @TELSABOTS**"
-        )
-        await update.message.delete()    
+        try:
+            await HB.send_photo(
+                chat_id=update.message.chat.id,
+                photo=thumb,
+                caption="**JOIN @TELSABOTS**"
+            )
+            await update.message.delete()
+        except Exception as e:
+            error_message = f"Error occurred: {str(e)}"
+            await HB.send_message(
+                chat_id=update.message.chat.id,
+                text="**Error occurred while sending thumbnail**"
+            )
+            await HB.send_message(
+                chat_id=update.message.chat.id,
+                text=error_message
+            )
 
     elif update.data == "home":
         await update.message.edit_text(
@@ -280,7 +313,6 @@ async def cb_data(bot, update):
     
     else:
         await update.message.delete()
-
 
 
 @HB.on_message(filters.text & filters.private)
