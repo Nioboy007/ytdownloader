@@ -6,10 +6,10 @@ from pyrogram.types import Message
 import requests
 HB = Client(
     "YOUTUBE Bot",
-    bot_token = os.environ["BOT_TOKEN", "6999401413:AAHgF1ZpUsCT5MgWX1Wky7GbegyeHvzi2AU6999401413:AAHgF1ZpUsCT5MgWX1Wky7GbegyeHvzi2AU"],
-    api_id = int(os.environ["API_ID", "10471716"]),
-    api_hash = os.environ["API_HASH", "f8b46a510b8ea23956af8b99086b68beae3894"]
-)  
+    bot_token=os.environ.get("BOT_TOKEN", "6999401413:AAHgF1ZpUsCT5MgWX1Wky7GbegyeHvzi2AU6999401413:AAHgF1ZpUsCT5MgWX1Wky7GbegyeHvzi2AU"),
+    api_id=int(os.environ.get("API_ID", "10471716")),
+    api_hash=os.environ.get("API_HASH", "f8b46a510b8ea23956af8b99086b68beae3894")
+)
 
 START_TEXT = """**
 HI {}, 
