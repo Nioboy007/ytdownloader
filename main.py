@@ -10,6 +10,7 @@ import requests
 from pytube import YouTube
 import time
 import pytube
+import urllib.request
 import re
 from helpers.thumbnail import take_screen_shot
 from pytube import Playlist
@@ -150,6 +151,7 @@ async def ytdl(_, message):
    global ythd
    global ytlow
    global yt
+   global thumb_filename
    global song
    global file
    global thumb
@@ -159,6 +161,19 @@ async def ytdl(_, message):
    yt = YouTube(url)
    chat_id =message.chat.id
    thumb = yt.thumbnail_url
+   thumb_filename, _ = urllib.request.urlretrieve(thumb)  # Download thumbnail from URL
+   try:
+       await  HB.send_photo(
+            chat_id = update.chat.id, 
+            photo=thumb_filename,
+            caption="🎬 TITLE : "+ yt.title +  "\n\n📤 UPLOADED : " + yt.author  + "\n\n📢 CHANNEL LINK " + f'https://www.youtube.com/channel/{yt.channel_id}',
+            reply_markup=result_buttons2,
+            quote=True,
+    
+    )
+   finally:
+        os.remove(thumb_filename)  # Remove the temporary thumbnail file after use
+
    ythd = yt.streams.get_highest_resolution()
    ytlow = yt.streams.get_by_resolution(resolution ='360p')
    file = yt.streams.filter(only_audio=True).first()
@@ -179,15 +194,8 @@ async def ytdl(_, message):
     ],[
         InlineKeyboardButton('🖼THUMBNAIL🖼', callback_data='thumbnail')
     ]]
+       
    )
-   
-   await message.reply_photo(
-            photo=thumb,
-            caption="🎬 TITLE : "+ yt.title +  "\n\n📤 UPLOADED : " + yt.author  + "\n\n📢 CHANNEL LINK " + f'https://www.youtube.com/channel/{yt.channel_id}',
-            reply_markup=result_buttons2,
-            quote=True,
-    
-    )
 
 
 
@@ -200,7 +208,7 @@ async def cb_data(bot, update):
                 chat_id=update.message.chat.id,
                 video=ythd.download(),
                 caption=result_text,
-                thumb=thumb.download(),
+                thumb=thumb_filename,  # Use the downloaded thumbnail file
                 reply_markup=result_buttons,
                 progress=progress_for_pyrogram,
                 progress_args=(
@@ -228,7 +236,7 @@ async def cb_data(bot, update):
                 video=ytlow.download(),
                 caption=result_text,
                 reply_markup=result_buttons,
-                thumb=thumb.download(),
+                thumb=thumb_filename,  # Use the downloaded thumbnail file
                 progress=progress_for_pyrogram,
                 progress_args=(
                     UPLOAD_START,
