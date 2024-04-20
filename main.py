@@ -162,18 +162,7 @@ async def ytdl(_, message, update):
    chat_id =message.chat.id
    thumb = yt.thumbnail_url
    thumb_filename, _ = urllib.request.urlretrieve(thumb)  # Download thumbnail from URL
-   try:
-       await  HB.send_photo(
-            chat_id = update.chat.id, 
-            photo=thumb_filename,
-            caption="🎬 TITLE : "+ yt.title +  "\n\n📤 UPLOADED : " + yt.author  + "\n\n📢 CHANNEL LINK " + f'https://www.youtube.com/channel/{yt.channel_id}',
-            reply_markup=result_buttons2,
-            quote=True,
-    
-    )
-   finally:
-        os.remove(thumb_filename)  # Remove the temporary thumbnail file after use
-
+   
    ythd = yt.streams.get_highest_resolution()
    ytlow = yt.streams.get_by_resolution(resolution ='360p')
    file = yt.streams.filter(only_audio=True).first()
@@ -194,9 +183,15 @@ async def ytdl(_, message, update):
     ],[
         InlineKeyboardButton('🖼THUMBNAIL🖼', callback_data='thumbnail')
     ]]
-       
    )
-
+   
+   await message.reply_photo(
+            photo=thumb_filename,
+            caption="🎬 TITLE : "+ yt.title +  "\n\n📤 UPLOADED : " + yt.author  + "\n\n📢 CHANNEL LINK " + f'https://www.youtube.com/channel/{yt.channel_id}',
+            reply_markup=result_buttons2,
+            quote=True,
+    
+   )
 
 
 @HB.on_callback_query()
