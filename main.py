@@ -10,6 +10,7 @@ import requests
 from pytube import YouTube
 import time
 import pytube
+import urllib.request
 import re
 from helpers.thumbnail import take_screen_shot
 from pytube import Playlist
@@ -144,9 +145,6 @@ def TimeFormatter(milliseconds: int) -> str:
 
 
 @HB.on_message(filters.regex(VIDEO_REGEX))
-asyncimport os
-import urllib.request
-
 async def ytdl(_, message):
    l = message.text.split()
    global var
