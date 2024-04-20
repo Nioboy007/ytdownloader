@@ -238,7 +238,7 @@ UPLOAD_START = " <bold>Upload STARTED...</bold>"
 
 
 from pytube import YouTube
-VIDEO_REGEX = r'(.*)youtube.com/(.*)[&|?]v=(?P<video>[^&]*)(.*)'
+VIDEO_REGEX = r'(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})'
 PLAYLIST_REGEX = r'(.*)youtube.com/(.*)[&|?]list=(?P<playlist>[^&]*)(.*)'
 @HB.on_message(filters.regex(VIDEO_REGEX))
 async def ytdl(_, message):
