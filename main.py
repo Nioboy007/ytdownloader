@@ -191,7 +191,8 @@ async def ytdl(_, message):
     )
 
 
-download_directory = download
+download_directory = ytaudio.download(filename=f"{str(yt.title)}")
+
 async def get_thumbnail(download_directory, duration):
     thumbnail = await take_screen_shot(download_directory, os.path.dirname(download_directory), random.randint(0, duration - 1))
     return thumbnail
