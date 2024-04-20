@@ -162,7 +162,6 @@ async def ytdl(_, message):
    thumb = yt.thumbnail_url
    ythd = yt.streams.get_highest_resolution()
    ytlow = yt.streams.get_by_resolution(resolution ='360p')
-   file = yt.streams.filter(only_audio=True).first()
    ytaudio = yt.streams.filter(only_audio=True).first()
    download = ytaudio.download(filename=f"{str(yt.title)}")
    rename = os.rename(download, f"{str(yt.title)}.mp3")
