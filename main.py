@@ -201,7 +201,7 @@ async def cb_data(bot, update):
      try:
         await  HB.send_video(
             chat_id = update.message.chat.id, 
-            video = f"{str(yt.title)},
+            video = f"{str(yt.title)}",
             caption=result_text,
             reply_markup=result_buttons,
             progress=progress_for_pyrogram,
@@ -221,7 +221,7 @@ async def cb_data(bot, update):
      try:
       await  HB.send_video(
         chat_id = update.message.chat.id, 
-        video = f"{str(yt.title)},
+        video = f"{str(yt.title)}",
         caption=result_text,
         reply_markup=result_buttons,
        progress=progress_for_pyrogram,
