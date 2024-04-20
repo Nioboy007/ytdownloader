@@ -145,6 +145,7 @@ def TimeFormatter(milliseconds: int) -> str:
 
 
 @HB.on_message(filters.regex(VIDEO_REGEX))
+async@HB.on_message(filters.regex(VIDEO_REGEX))
 async def ytdl(_, message):
     l = message.text.split()
     global var
@@ -172,25 +173,23 @@ async def ytdl(_, message):
     audio_size = f"{int(format_bytes(ytaudio.filesize)[0]):.2f}{format_bytes(ytaudio.filesize)[1]}"
     hd = f"{int(format_bytes(ythd.filesize)[0]):.2f}{format_bytes(ythd.filesize)[1]}"
     low = f"{int(format_bytes(ytlow.filesize)[0]):.2f}{format_bytes(ytlow.filesize)[1]}"
-
-
-   result_buttons2 = InlineKeyboardMarkup(
-    [[
-        InlineKeyboardButton('🎬720P ' +' ⭕️ '+ hd, callback_data='high'),
-        InlineKeyboardButton('🎬 360p ' + '⭕️ ' +  low, callback_data='360p')
-    ],[
-        InlineKeyboardButton('🎧 AUDIO '+  '⭕️ ' +  audio_size , callback_data='audio')
-    ],[
-        InlineKeyboardButton('🖼THUMBNAIL🖼', callback_data='thumbnail')
-    ]]
-   )
    
-   await message.reply_photo(
-            photo=thumb,
-            caption="🎬 TITLE : "+ yt.title +  "\n\n📤 UPLOADED : " + yt.author  + "\n\n📢 CHANNEL LINK " + f'https://www.youtube.com/channel/{yt.channel_id}',
-            reply_markup=result_buttons2,
-            quote=True,
-    
+    result_buttons2 = InlineKeyboardMarkup(
+        [[
+            InlineKeyboardButton('🎬720P ' +' ⭕️ '+ hd, callback_data='high'),
+            InlineKeyboardButton('🎬 360p ' + '⭕️ ' +  low, callback_data='360p')
+        ],[
+            InlineKeyboardButton('🎧 AUDIO '+  '⭕️ ' +  audio_size , callback_data='audio')
+        ],[
+            InlineKeyboardButton('🖼THUMBNAIL🖼', callback_data='thumbnail')
+        ]]
+    )
+   
+    await message.reply_photo(
+        photo=thumb,
+        caption="🎬 TITLE : "+ yt.title +  "\n\n📤 UPLOADED : " + yt.author  + "\n\n📢 CHANNEL LINK " + f'https://www.youtube.com/channel/{yt.channel_id}',
+        reply_markup=result_buttons2,
+        quote=True,
     )
 
 
