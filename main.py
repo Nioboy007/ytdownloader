@@ -146,26 +146,29 @@ def TimeFormatter(milliseconds: int) -> str:
 
 @HB.on_message(filters.regex(VIDEO_REGEX))
 async def ytdl(_, message):
-   l = message.text.split()
-   global var
-   global ythd
-   global ytlow
-   global yt
-   global song
-   global file
-   global thumb
-   global ytaudio
-   var=message.text
-   url= message.text
-   yt = YouTube(url)
-   chat_id =message.chat.id
-   thumb = yt.thumbnail_url
-   ythd = yt.streams.get_highest_resolution()
-   ytlow = yt.streams.get_by_resolution(resolution ='360p')
+    l = message.text.split()
+    global var
+    global ythd
+    global ytlow
+    global yt
+    global song
+    global file
+    global thumb
+    global ytaudio
+    var = message.text
+    url = message.text
+    yt = YouTube(url)
+    chat_id = message.chat.id
+    thumb = yt.thumbnail_url
+    ythd = yt.streams.get_highest_resolution()
+    ytlow = yt.streams.get_by_resolution(resolution='360p')
+    ytaudio = yt.streams.filter(only_audio=True).first()
+    download_dir = os.path.join(os.getcwd(), "downloads")
+    if not os.path.exists(download_dir):
+        os.makedirs(download_dir)
+    video_title = yt.title
    file = yt.streams.filter(only_audio=True).first()
    ytaudio = yt.streams.filter(only_audio=True).first()
-   download = ytaudio.download(filename=f"{str(yt.title)}")
-   rename = os.rename(download, f"{str(yt.title)}.mp3")
    audio_size = f"{int(format_bytes(ytaudio.filesize)[0]):.2f}{format_bytes(ytaudio.filesize)[1]}"
    hd = f"{int(format_bytes(ythd.filesize)[0]):.2f}{format_bytes(ythd.filesize)[1]}"
    low = f"{int(format_bytes(ytlow.filesize)[0]):.2f}{format_bytes(ytlow.filesize)[1]}"
