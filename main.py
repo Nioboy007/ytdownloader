@@ -145,7 +145,7 @@ def TimeFormatter(milliseconds: int) -> str:
 
 
 @HB.on_message(filters.regex(VIDEO_REGEX))
-async def ytdl(_, message):
+async def ytdl(_, message, update):
    l = message.text.split()
    global var
    global ythd
