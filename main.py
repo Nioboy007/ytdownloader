@@ -238,21 +238,21 @@ async def cb_data(bot, update):
             chat_id = update.message.chat.id,
             text="**😔 360P QUALITY IS NOT AVAILABLE \n CHOOSE ANY OTHER QUALITIES**") 
          
-    audio_file_path = os.path.join("downloads", f"{yt.title}.mp3")
     elif update.data == 'audio':
-        await  HB.send_audio(
-        chat_id = update.message.chat.id,
-        audio=audio_file_path,
-        caption=result_text,
-        duration=yt.length,
-        reply_markup=result_buttons,
-        progress=progress_for_pyrogram,
-                    progress_args=(
-                        UPLOAD_START,
-                        update.message,
-                        start_time
-                    )
-      )
+        audio_file_path = os.path.join("downloads", f"{yt.title}.mp3")
+        await HB.send_audio(
+            chat_id=update.message.chat.id,
+            audio=audio_file_path,
+            caption=result_text,
+            duration=yt.length,
+            reply_markup=result_buttons,
+            progress=progress_for_pyrogram,
+            progress_args=(
+                UPLOAD_START,
+                update.message,
+                start_time
+            )
+        )
         await update.message.delete()
 
     elif update.data == 'thumbnail':
