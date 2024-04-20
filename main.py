@@ -160,13 +160,12 @@ async def ytdl(_, message):
    yt = YouTube(url)
    chat_id =message.chat.id
    thumb = yt.thumbnail_url
-   output_directory = "downloads/"
    ythd = yt.streams.get_highest_resolution()
    ytlow = yt.streams.get_by_resolution(resolution ='360p')
+   file = yt.streams.filter(only_audio=True).first()
    ytaudio = yt.streams.filter(only_audio=True).first()
-   download_path = ytaudio.download(output_path=output_directory, filename=f"{str(yt.title)}")
-   rename = os.rename(download_path, f"{str(yt.title)}.mp3")
-   audio_path = os.path.join(output_directory, f"{str(yt.title)}.mp3")
+   download = ytaudio.download(filename=f"{str(yt.title)}")
+   rename = os.rename(download, f"{str(yt.title)}.mp3")
    audio_size = f"{int(format_bytes(ytaudio.filesize)[0]):.2f}{format_bytes(ytaudio.filesize)[1]}"
    hd = f"{int(format_bytes(ythd.filesize)[0]):.2f}{format_bytes(ythd.filesize)[1]}"
    low = f"{int(format_bytes(ytlow.filesize)[0]):.2f}{format_bytes(ytlow.filesize)[1]}"
@@ -190,8 +189,7 @@ async def ytdl(_, message):
             quote=True,
     
     )
-import time
-start_time = time.time()
+
 
 
 @HB.on_callback_query()
@@ -236,23 +234,22 @@ async def cb_data(bot, update):
      except:
         await HB.send_message(
             chat_id = update.message.chat.id,
-            text="**😔 360P QUALITY IS NOT AVAILABLE \n CHOOSE ANY OTHER QUALITIES**") 
-         
+            text="**😔 360P QUALITY IS NOT AVAILABLE \n CHOOSE ANY OTHER QUALITIES**")  
+
     elif update.data == 'audio':
-        audio_file_path = os.path.join("downloads", f"{str(yt.title)}.mp3")
-        await HB.send_audio(
-            chat_id=update.message.chat.id,
-            audio=audio_file_path,
-            caption=result_text,
-            duration=yt.length,
-            reply_markup=result_buttons,
-            progress=progress_for_pyrogram,
-            progress_args=(
-                UPLOAD_START,
-                update.message,
-                start_time
-            )
-        )
+        await  HB.send_audio(
+        chat_id = update.message.chat.id,
+        audio=f"{str(yt.title)}.mp3",
+        caption=result_text,
+        duration=yt.length,
+        reply_markup=result_buttons,
+        progress=progress_for_pyrogram,
+                    progress_args=(
+                        UPLOAD_START,
+                        update.message,
+                        start_time
+                    )
+      )
         await update.message.delete()
 
     elif update.data == 'thumbnail':
