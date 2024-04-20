@@ -144,105 +144,144 @@ def TimeFormatter(milliseconds: int) -> str:
 
 
 
-
 @HB.on_message(filters.regex(VIDEO_REGEX))
 async def ytdl(_, message):
-    l = message.text.split()
-    global var
-    global ythd
-    global ytlow
-    global yt
-    global song
-    global file
-    global thumb
-    global ytaudio
-    var = message.text
-    url = message.text
-    yt = YouTube(url)
-    chat_id = message.chat.id
-    thumb = yt.thumbnail_url
-    ythd = yt.streams.get_highest_resolution()
-    ytlow = yt.streams.get_by_resolution(resolution='360p')
-    ytaudio = yt.streams.filter(only_audio=True).first()
-    download_dir = os.path.join(os.getcwd(), "downloads")
-    if not os.path.exists(download_dir):
-        os.makedirs(download_dir)
-    video_title = yt.title
-    file = yt.streams.filter(only_audio=True).first()  # Correctly indented line
-    ytaudio = yt.streams.filter(only_audio=True).first()
-    audio_size = f"{int(format_bytes(ytaudio.filesize)[0]):.2f}{format_bytes(ytaudio.filesize)[1]}"
-    hd = f"{int(format_bytes(ythd.filesize)[0]):.2f}{format_bytes(ythd.filesize)[1]}"
-    low = f"{int(format_bytes(ytlow.filesize)[0]):.2f}{format_bytes(ytlow.filesize)[1]}"
+   l = message.text.split()
+   global var
+   global ythd
+   global ytlow
+   global yt
+   global song
+   global file
+   global thumb
+   global ytaudio
+   var=message.text
+   url= message.text
+   yt = YouTube(url)
+   chat_id =message.chat.id
+   thumb = yt.thumbnail_url
+   ythd = yt.streams.get_highest_resolution()
+   ytlow = yt.streams.get_by_resolution(resolution ='360p')
+   file = yt.streams.filter(only_audio=True).first()
+   ytaudio = yt.streams.filter(only_audio=True).first()
+   download = ytaudio.download(filename=f"{str(yt.title)}")
+   rename = os.rename(download, f"{str(yt.title)}.mp3")
+   audio_size = f"{int(format_bytes(ytaudio.filesize)[0]):.2f}{format_bytes(ytaudio.filesize)[1]}"
+   hd = f"{int(format_bytes(ythd.filesize)[0]):.2f}{format_bytes(ythd.filesize)[1]}"
+   low = f"{int(format_bytes(ytlow.filesize)[0]):.2f}{format_bytes(ytlow.filesize)[1]}"
    
-    result_buttons2 = InlineKeyboardMarkup(
-        [[
-            InlineKeyboardButton('🎬720P ' +' ⭕️ '+ hd, callback_data='high'),
-            InlineKeyboardButton('🎬 360p ' + '⭕️ ' +  low, callback_data='360p')
-        ],[
-            InlineKeyboardButton('🎧 AUDIO '+  '⭕️ ' +  audio_size , callback_data='audio')
-        ],[
-            InlineKeyboardButton('🖼THUMBNAIL🖼', callback_data='thumbnail')
-        ]]
-    )
+   import requests
+   result_buttons2 = InlineKeyboardMarkup(
+    [[
+        InlineKeyboardButton('🎬720P ' +' ⭕️ '+ hd, callback_data='high'),
+        InlineKeyboardButton('🎬 360p ' + '⭕️ ' +  low, callback_data='360p')
+    ],[
+        InlineKeyboardButton('🎧 AUDIO '+  '⭕️ ' +  audio_size , callback_data='audio')
+    ],[
+        InlineKeyboardButton('🖼THUMBNAIL🖼', callback_data='thumbnail')
+    ]]
+   )
    
-    await message.reply_photo(
-        photo=thumb,
-        caption="🎬 TITLE : "+ yt.title +  "\n\n📤 UPLOADED : " + yt.author  + "\n\n📢 CHANNEL LINK " + f'https://www.youtube.com/channel/{yt.channel_id}',
-        reply_markup=result_buttons2,
-        quote=True,
+   await message.reply_photo(
+            photo=thumb,
+            caption="🎬 TITLE : "+ yt.title +  "\n\n📤 UPLOADED : " + yt.author  + "\n\n📢 CHANNEL LINK " + f'https://www.youtube.com/channel/{yt.channel_id}',
+            reply_markup=result_buttons2,
+            quote=True,
+    
     )
-
-
+import time
+start_time = time.time()
 
 
 @HB.on_callback_query()
-async def cb_data(bot, update):
-    try:
-        if update.data == 'high':  # For example, when the user selects the high resolution option
-            try:
-                # Download the video file in high resolution
-                video_file_path = os.path.join(download_dir, f"{video_title}_high.mp4")
-                ythd.download(output_path=download_dir, filename=f"{video_title}_high")
-                # Send the video to the chat using HB.send_video()
-                await HB.send_video(chat_id=update.message.chat.id, video=video_file_path, caption=result_text,
-                                    progress=progress_for_pyrogram, progress_args=(UPLOAD_START, update.message, start_time))
-                await update.message.delete()
-            except Exception as e:
-                await HB.send_message(chat_id=update.message.chat.id,
-                                      text="😔 1080P QUALITY IS NOT AVAILABLE\n CHOOSE ANY OTHER QUALITIES")
+async def cb_data(bot, update):                     
+    
+    if update.data == 'high':
+     try:
+        await  HB.send_video(
+            chat_id = update.message.chat.id, 
+            video = ythd.download(),
+            caption=result_text,
+            reply_markup=result_buttons,
+            progress=progress_for_pyrogram,
+                    progress_args=(
+                        UPLOAD_START,
+                        update.message,
+                        start_time
+                    )
+      )
+        await update.message.delete()
+     except:
+        await HB.send_message(
+            chat_id = update.message.chat.id,
+            text="**😔 1080P QUALITY IS NOT AVAILABLE\n CHOOSE ANY OTHER QUALITIES**")    
+    
+    elif update.data == '360p':
+     try:
+      await  HB.send_video(
+        chat_id = update.message.chat.id, 
+        video = ytlow.download(),
+        caption=result_text,
+        reply_markup=result_buttons,
+       progress=progress_for_pyrogram,
+                    progress_args=(
+                        UPLOAD_START,
+                        update.message,
+                        start_time
+                    )
+        )
+      await update.message.delete()
 
-        elif update.data == '360p':  # For example, when the user selects the 360p resolution option
-            try:
-                # Download the video file in 360p resolution
-                video_file_path = os.path.join(download_dir, f"{video_title}_360p.mp4")
-                ytlow.download(output_path=download_dir, filename=f"{video_title}_360p")
-                # Send the video to the chat using HB.send_video()
-                await HB.send_video(chat_id=update.message.chat.id, video=video_file_path, caption=result_text,
-                                    progress=progress_for_pyrogram, progress_args=(UPLOAD_START, update.message, start_time))
-                await update.message.delete()
-            except Exception as e:
-                await HB.send_message(chat_id=update.message.chat.id,
-                                      text="😔 360P QUALITY IS NOT AVAILABLE\n CHOOSE ANY OTHER QUALITIES")
-        # Add other conditions as needed for different resolution options or actions
+     except:
+        await HB.send_message(
+            chat_id = update.message.chat.id,
+            text="**😔 360P QUALITY IS NOT AVAILABLE \n CHOOSE ANY OTHER QUALITIES**")  
 
-        elif update.data == "thumbnail":
-            await HB.send_photo(chat_id=update.message.chat.id, photo=thumb, caption="**JOIN @TELSABOTS**")
-            await update.message.delete()
+    elif update.data == 'audio':
+        await  HB.send_audio(
+        chat_id = update.message.chat.id,
+        audio=f"{str(yt.title)}.mp3",
+        caption=result_text,
+        duration=yt.length,
+        reply_markup=result_buttons,
+        progress=progress_for_pyrogram,
+                    progress_args=(
+                        UPLOAD_START,
+                        update.message,
+                        start_time
+                    )
+      )
+        await update.message.delete()
 
-        elif update.data in ["home", "help", "about"]:
-            await update.message.edit_text(
-                text=START_TEXT.format(update.from_user.mention),
-                disable_web_page_preview=True,
-                reply_markup=START_BUTTONS if update.data == "home" else
-                             HELP_BUTTONS if update.data == "help" else
-                             ABOUT_BUTTONS
-            )
+    elif update.data == 'thumbnail':
+        await HB.send_photo(
+            chat_id = update.message.chat.id, 
+            photo=thumb,
+            caption="**JOIN @TELSABOTS**"
+        )
+        await update.message.delete()    
 
-        else:
-            await update.message.delete()
-
-    except Exception as e:
-        print(f"An error occurred: {str(e)}")
+    elif update.data == "home":
+        await update.message.edit_text(
+            text=START_TEXT.format(update.from_user.mention),
+            disable_web_page_preview=True,
+            reply_markup=START_BUTTONS
+        )
+    elif update.data == "help":
+        await update.message.edit_text(
+            text=HELP_TEXT,
+            disable_web_page_preview=True,
+            reply_markup=HELP_BUTTONS
+        )
+    elif update.data == "about":
+        await update.message.edit_text(
+            text=ABOUT_TEXT,
+            disable_web_page_preview=True,
+            reply_markup=ABOUT_BUTTONS
+        )
+    
+    else:
+        await update.message.delete()
         
 
 print("Private Botz On the Run HOHOHO *LOL 😂")
