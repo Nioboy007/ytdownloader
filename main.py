@@ -195,20 +195,7 @@ async def ytdl(_, message):
 
 
 
-@HB.on_callback_query()
-async def cb_data(bot, update):                     
-    
-    if update.data == 'high':
-     try:
-        await  HB.send_video(
-            chat_id = update.message.chat.id, 
-            video = ythd.download(),
-            caption=result_text,
-            reply_markup=result_buttons,
-            progress=progress_for_pyrogram,
-                    progress_args=(
-                        UPLOAD_START,
-                        update.message,
+
 @HB.on_callback_query()
 async def cb_data(bot, update):
     try:
