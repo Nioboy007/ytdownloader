@@ -197,67 +197,61 @@ start_time = time.time()
 async def cb_data(bot, update):                     
     
     if update.data == 'high':
-     try:
-        await  HB.send_video(
-            chat_id = update.message.chat.id, 
-            video = ythd.download(),
-            thumbnail = thumb,
-            caption=result_text,
-            reply_markup=result_buttons,
-            progress=progress_for_pyrogram,
-                    progress_args=(
-                        UPLOAD_START,
-                        update.message,
-                        start_time
-                    )
-      )
-        await update.message.delete()
-     except:
-        await HB.send_message(
-            chat_id = update.message.chat.id,
-            text="**😔 1080P QUALITY IS NOT AVAILABLE\n CHOOSE ANY OTHER QUALITIES**")    
+        try:
+            await HB.send_video(
+                chat_id=update.message.chat.id, 
+                video=ythd.download(),
+                thumbnail=thumb,
+                caption=result_text,
+                reply_markup=result_buttons,
+                progress=progress_for_pyrogram,
+                progress_args=(UPLOAD_START, update.message, start_time)
+            )
+            await update.message.delete()
+        except Exception as e:
+            print("An error occurred:", e)  # Print the error to the console
+            await HB.send_message(
+                chat_id=update.message.chat.id,
+                text="**😔 1080P QUALITY IS NOT AVAILABLE\n CHOOSE ANY OTHER QUALITIES**"
+            )    
     
     elif update.data == '360p':
-     try:
-      await  HB.send_video(
-        chat_id = update.message.chat.id, 
-        video = ytlow.download(),
-        caption=result_text,
-         thumbnail = thumb,
-        reply_markup=result_buttons,
-       progress=progress_for_pyrogram,
-                    progress_args=(
-                        UPLOAD_START,
-                        update.message,
-                        start_time
-                    )
-        )
-      await update.message.delete()
-
-     except:
-        await HB.send_message(
-            chat_id = update.message.chat.id,
-            text="**😔 360P QUALITY IS NOT AVAILABLE \n CHOOSE ANY OTHER QUALITIES**")  
+        try:
+            await HB.send_video(
+                chat_id=update.message.chat.id, 
+                video=ytlow.download(),
+                caption=result_text,
+                thumbnail=thumb,
+                reply_markup=result_buttons,
+                progress=progress_for_pyrogram,
+                progress_args=(UPLOAD_START, update.message, start_time)
+            )
+            await update.message.delete()
+        except Exception as e:
+            print("An error occurred:", e)  # Print the error to the console
+            await HB.send_message(
+                chat_id=update.message.chat.id,
+                text="**😔 360P QUALITY IS NOT AVAILABLE\n CHOOSE ANY OTHER QUALITIES**"
+            )  
 
     elif update.data == 'audio':
-        await  HB.send_audio(
-        chat_id = update.message.chat.id,
-        audio=f"{str(yt.title)}.mp3",
-        caption=result_text,
-        duration=yt.length,
-        reply_markup=result_buttons,
-        progress=progress_for_pyrogram,
-                    progress_args=(
-                        UPLOAD_START,
-                        update.message,
-                        start_time
-                    )
-      )
-        await update.message.delete()
-
+        try:
+            await HB.send_audio(
+                chat_id=update.message.chat.id,
+                audio=f"{str(yt.title)}.mp3",
+                caption=result_text,
+                duration=yt.length,
+                reply_markup=result_buttons,
+                progress=progress_for_pyrogram,
+                progress_args=(UPLOAD_START, update.message, start_time)
+            )
+            await update.message.delete()
+        except Exception as e:
+            print("An error occurred:", e)  # Print the error to the console
+    
     elif update.data == 'thumbnail':
         await HB.send_photo(
-            chat_id = update.message.chat.id, 
+            chat_id=update.message.chat.id, 
             photo=thumb,
             caption="**JOIN @TELSABOTS**"
         )
@@ -284,10 +278,8 @@ async def cb_data(bot, update):
     
     else:
         await update.message.delete()
-import pytube
-import re
-from pytube import YouTube
-from pytube import Playlist
+
+
 
 @HB.on_message(filters.text & filters.private)
 async def ytdl(_, update):
