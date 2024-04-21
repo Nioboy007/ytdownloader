@@ -18,10 +18,6 @@ from pytube import Playlist
 from pytube.exceptions import AgeRestrictedError
 
 
-from pytube.innertube import InnerTube
-
-# Modify the client used by InnerTube
-InnerTube._default_clients['ANDROID_MUSIC'] = InnerTube._default_clients['ANDROID']
 
 
 
