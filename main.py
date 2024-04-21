@@ -153,6 +153,7 @@ async def ytdl(_, message):
     global yt
     global thumb_filename
     global song
+    global length
     global file
     global thumb
     global ytaudio
@@ -162,7 +163,7 @@ async def ytdl(_, message):
     yt = YouTube(url)
     chat_id = message.chat.id
     thumb = yt.thumbnail_url
-    duration_in_seconds = yt.length
+    length = yt.length
     video_title = yt.title
     thumb_extension = ".jpeg"
     custom_thumb_filename = f"{video_title}{thumb_extension}"
@@ -177,7 +178,6 @@ async def ytdl(_, message):
     hd = f"{int(format_bytes(ythd.filesize)[0]):.2f}{format_bytes(ythd.filesize)[1]}"
     low = f"{int(format_bytes(ytlow.filesize)[0]):.2f}{format_bytes(ytlow.filesize)[1]}"
 
-    print("Duration of the video:", duration_in_seconds, "seconds")
 
     result_buttons2 = InlineKeyboardMarkup(
         [[
@@ -206,6 +206,7 @@ async def cb_data(bot, update):
                 chat_id=update.message.chat.id,
                 video=ythd.download(),
                 caption=result_text,
+                duration=length,
                 thumb=thumb_filename,  # Use the downloaded thumbnail file
                 reply_markup=result_buttons,
                 progress=progress_for_pyrogram,
@@ -233,6 +234,7 @@ async def cb_data(bot, update):
                 chat_id=update.message.chat.id,
                 video=ytlow.download(),
                 caption=result_text,
+                duration=length,
                 reply_markup=result_buttons,
                 thumb=thumb_filename,  # Use the downloaded thumbnail file
                 progress=progress_for_pyrogram,
