@@ -1,9 +1,9 @@
 import os 
+import youtube_dl
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup 
 from pyrogram import Client, filters,emoji
 from pyrogram.types import Message
 import os
-import yt_dlp
 import math
 from Plugins.commands import commands
 import time
@@ -89,43 +89,48 @@ async def ytdl(_, message):
     url = message.text
     
     try:
-        video_info = ytdlp.YoutubeDL().extract_info(url, download=False)
-        video_title = video_info['title']
-        chat_id = message.chat.id
-        thumb = video_info['thumbnail']
-        length = video_info['duration']
-        ythd_url = video_info['formats'][-1]['url']
-        ytlow_url = video_info['formats'][0]['url']
-        
-        thumb_extension = ".jpeg"
-        custom_thumb_filename = f"{video_title}{thumb_extension}"
-        thumb_filename, _ = urllib.request.urlretrieve(thumb, custom_thumb_filename)
-        
-        ythd = ytdlp.streams.Stream(ythd_url)
-        ytlow = ytdlp.streams.Stream(ytlow_url)
-        
-        result_buttons2 = InlineKeyboardMarkup(
-            [[
-                InlineKeyboardButton('🎬720P ' + ' ⭕️ ', callback_data='high'),
-                InlineKeyboardButton('🎬 360p ' + '⭕️ ', callback_data='360p')
-            ], [
-                InlineKeyboardButton('🎧 AUDIO ', callback_data='audio')
-            ], [
-                InlineKeyboardButton('🖼THUMBNAIL🖼', callback_data='thumbnail')
-            ]]
-        )
+        ydl_opts = {'format': 'best'}
+        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+            video_info = ydl.extract_info(url, download=False)
+            video_title = video_info['title']
+            chat_id = message.chat.id
+            thumb = video_info['thumbnail']
+            length = video_info['duration']
+            ythd_url = video_info['formats'][-1]['url']
+            ytlow_url = video_info['formats'][0]['url']
+            
+            thumb_extension = ".jpeg"
+            custom_thumb_filename = f"{video_title}{thumb_extension}"
+            thumb_filename, _ = urllib.request.urlretrieve(thumb, custom_thumb_filename)
+            
+            ythd = ytdlp.streams.Stream(ythd_url)
+            ytlow = ytdlp.streams.Stream(ytlow_url)
+            
+            result_buttons2 = InlineKeyboardMarkup(
+                [[
+                    InlineKeyboardButton('🎬720P ' + ' ⭕️ ', callback_data='high'),
+                    InlineKeyboardButton('🎬 360p ' + '⭕️ ', callback_data='360p')
+                ], [
+                    InlineKeyboardButton('🎧 AUDIO ', callback_data='audio')
+                ], [
+                    InlineKeyboardButton('🖼THUMBNAIL🖼', callback_data='thumbnail')
+                ]]
+            )
 
-        await message.reply_photo(
-            photo=thumb_filename,
-            caption="🎬 TITLE : " + video_title + "\n\n📤 UPLOADED : " + video_info['uploader'] + "\n\n📢 CHANNEL LINK " + f'https://www.youtube.com/channel/{video_info["channel_id"]}',
-            reply_markup=result_buttons2,
-            quote=True,
-        )
-        
+            await message.reply_photo(
+                photo=thumb_filename,
+                caption="🎬 TITLE : " + video_title + "\n\n📤 UPLOADED : " + video_info['uploader'] + "\n\n📢 CHANNEL LINK " + f'https://www.youtube.com/channel/{video_info["channel_id"]}',
+                reply_markup=result_buttons2,
+                quote=True,
+            )
+            
     except Exception as e:
         print(f"Error occurred: {str(e)}")
 
 
+@HB.on_callback_query()
+async def cb_data(bot, update):
+    # Other parts of your code remain unchanged
 
 @HB.on_callback_query()
 async def cb_data(bot, update):
