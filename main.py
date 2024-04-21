@@ -161,6 +161,8 @@ async def ytdl(_, message):
    yt = YouTube(url)
    chat_id =message.chat.id
    thumb = yt.thumbnail_url
+   duration_in_seconds = yt.length
+print("Duration of the video:", duration_in_seconds, "seconds")
    video_title = yt.title
    thumb_extension = ".jpeg"
    custom_thumb_filename = f"{video_title}{thumb_extension}"
