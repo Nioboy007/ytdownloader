@@ -43,6 +43,8 @@ def commands():
      
     """
 
+    UPLOAD_START = " <bold>Upload STARTED...</bold>"
+
     START_BUTTONS = InlineKeyboardMarkup(
             [[
             InlineKeyboardButton('📢CHANNEL📢', url='https://telegram.me/TELSABOTS'),
@@ -105,4 +107,4 @@ def commands():
 
     result_text = """**JOIN @TELSABOTS**""" 
 
-    return (START_TEXT, HELP_TEXT, ABOUT_TEXT, START_BUTTONS, result_buttons, HELP_BUTTONS, ABOUT_BUTTONS, SOURCE_TEXT, SOURCE_BUTTONS, result_text)
+    return (START_TEXT, HELP_TEXT, UPLOAD_START, ABOUT_TEXT, START_BUTTONS, result_buttons, HELP_BUTTONS, ABOUT_BUTTONS, SOURCE_TEXT, SOURCE_BUTTONS, result_text)
