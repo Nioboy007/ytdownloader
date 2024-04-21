@@ -249,7 +249,7 @@ async def cb_data(bot, update):
         await update.message.delete()
 
 
-@HB.on_message(filters.text & filters.private)
+@HB.on_message(filters.regex(PLAYLIST_REGEX))
 async def ytdl(_, update):
    purl=update.text
    pyt = Playlist(purl)
