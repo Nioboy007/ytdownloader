@@ -16,26 +16,40 @@ import re
 from helpers.thumbnail import take_screen_shot
 from pytube import Playlist
 from pytube.exceptions import AgeRestrictedError
+import pickle
+from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
-
-
 
 # Define your YouTube credentials directly
 YOUTUBE_CREDENTIALS = {
     "client_id": "840842605914-pjajijhgefeku92f49vlffrsrm52mluq.apps.googleusercontent.com",
     "client_secret": "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",
     "token_uri": "https://oauth2.googleapis.com/token",
+    "refresh_token": "4/0AeaYSHDYjrDgZ3jt9xiVRalv8NNUgbjVklo7v9XAS1UY4EIXQXf84vG-SMPFBpuwhdKlmg",
     "scopes": ["https://www.googleapis.com/auth/youtube.readonly"]
 }
 
-# Function to authenticate with YouTube
+# Function to authenticate with YouTube using the refresh token
 def authenticate_youtube():
-    return Credentials.from_client_id_and_client_secret(
+    creds = Credentials(
+        None,  # No access token, we are going to refresh it using the refresh token
+        refresh_token=YOUTUBE_CREDENTIALS["refresh_token"],
+        token_uri=YOUTUBE_CREDENTIALS["token_uri"],
         client_id=YOUTUBE_CREDENTIALS["client_id"],
         client_secret=YOUTUBE_CREDENTIALS["client_secret"],
-        token_uri=YOUTUBE_CREDENTIALS["token_uri"],
         scopes=YOUTUBE_CREDENTIALS["scopes"]
     )
+
+    # If there are no valid credentials available, we use the refresh token
+    if not creds.valid:
+        if creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+
+    # Save the credentials for the next run
+    with open('token.pickle', 'wb') as token:
+        pickle.dump(creds, token)
+
+    return creds
 
 
 
