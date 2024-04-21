@@ -3,7 +3,7 @@ from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from pyrogram import Client, filters,emoji
 from pyrogram.types import Message
 import os
-import yt-dlp
+import yt_dlp
 import math
 from Plugins.commands import commands
 import time
