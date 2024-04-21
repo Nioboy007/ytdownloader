@@ -1,21 +1,14 @@
 import os 
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup 
-from pyrogram import Client, filters,emoji
+from pyrogram import Client, filters
 from pyrogram.types import Message
-import os
-import math
-import youtube_dl
 from Plugins.commands import commands
 import time
 import requests
-from pytube import YouTube
-import time
-from helpers.progress import TimeFormatter, humanbytes, format_bytes, progress_for_pyrogram
-import pytube
-import urllib.request
-import re
-from helpers.thumbnail import take_screen_shot
 from pytube import Playlist
+import subprocess
+import youtube_dl
+
 
 START_TEXT, HELP_TEXT, UPLOAD_START, ABOUT_TEXT, START_BUTTONS, result_buttons, HELP_BUTTONS, ABOUT_BUTTONS, SOURCE_TEXT, SOURCE_BUTTONS, result_text = commands()
 
