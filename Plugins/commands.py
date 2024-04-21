@@ -107,4 +107,4 @@ def commands():
 
     result_text = """**JOIN @TELSABOTS**""" 
 
-    return (START_TEXT, HELP_TEXT, ABOUT_TEXT, START_BUTTONS, result_buttons, HELP_BUTTONS, ABOUT_BUTTONS, SOURCE_TEXT, SOURCE_BUTTONS, result_text)
+    return (START_TEXT, HELP_TEXT, ABOUT_TEXT, UPLOAD_START, START_BUTTONS, result_buttons, HELP_BUTTONS, ABOUT_BUTTONS, SOURCE_TEXT, SOURCE_BUTTONS, result_text)
