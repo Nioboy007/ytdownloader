@@ -84,7 +84,7 @@ async def ytdl(_, message):
     var = message.text
     global url
     url = message.text
-    yt = YouTube(url, use_oauth=True, allow_oauth_cache=True)
+    yt = YouTube(url)
     chat_id = message.chat.id
     thumb = yt.thumbnail_url
     length = yt.length
