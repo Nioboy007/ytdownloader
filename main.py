@@ -16,40 +16,12 @@ import re
 from helpers.thumbnail import take_screen_shot
 from pytube import Playlist
 from pytube.exceptions import AgeRestrictedError
-import pickle
-from google.auth.transport.requests import Request
-from google.oauth2.credentials import Credentials
 
-# Define your YouTube credentials directly
-YOUTUBE_CREDENTIALS = {
-    "client_id": "840842605914-pjajijhgefeku92f49vlffrsrm52mluq.apps.googleusercontent.com",
-    "client_secret": "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",
-    "token_uri": "https://oauth2.googleapis.com/token",
-    "refresh_token": "4/0AeaYSHDYjrDgZ3jt9xiVRalv8NNUgbjVklo7v9XAS1UY4EIXQXf84vG-SMPFBpuwhdKlmg",
-    "scopes": ["https://www.googleapis.com/auth/youtube.readonly"]
-}
 
-# Function to authenticate with YouTube using the refresh token
-def authenticate_youtube():
-    creds = Credentials(
-        None,  # No access token, we are going to refresh it using the refresh token
-        refresh_token=YOUTUBE_CREDENTIALS["refresh_token"],
-        token_uri=YOUTUBE_CREDENTIALS["token_uri"],
-        client_id=YOUTUBE_CREDENTIALS["client_id"],
-        client_secret=YOUTUBE_CREDENTIALS["client_secret"],
-        scopes=YOUTUBE_CREDENTIALS["scopes"]
-    )
+from pytube.innertube import InnerTube
 
-    # If there are no valid credentials available, we use the refresh token
-    if not creds.valid:
-        if creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-
-    # Save the credentials for the next run
-    with open('token.pickle', 'wb') as token:
-        pickle.dump(creds, token)
-
-    return creds
+# Modify the client used by InnerTube
+InnerTube._default_clients['ANDROID_MUSIC'] = InnerTube._default_clients['ANDROID']
 
 
 
@@ -109,11 +81,8 @@ async def about_message(bot, update):
 @HB.on_message(filters.regex(VIDEO_REGEX))
 async def ytdl(_, message):
     try:
-        # Authenticate with YouTube
-        creds = authenticate_youtube()
-
         # Use authenticated credentials for YouTube requests
-        yt = YouTube(message.text, credentials=creds)
+        yt = YouTube(message.text)
 
         # Extract video information
         thumb = yt.thumbnail_url
