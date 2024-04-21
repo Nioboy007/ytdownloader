@@ -18,8 +18,6 @@ from pytube import Playlist
 
 START_TEXT, HELP_TEXT, UPLOAD_START, ABOUT_TEXT, START_BUTTONS, result_buttons, HELP_BUTTONS, ABOUT_BUTTONS, SOURCE_TEXT, SOURCE_BUTTONS, result_text = commands()
 
-UPLOAD_START = " <bold>Upload STARTED...</bold>"
-
 HB = Client(
     "YOUTUBE Bot",
     bot_token=os.environ.get("BOT_TOKEN", "6999401413:AAHgF1ZpUsCT5MgWX1Wky7GbegyeHvzi2AU"),
