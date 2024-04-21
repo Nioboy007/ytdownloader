@@ -128,9 +128,6 @@ async def ytdl(_, message):
         print(f"Error occurred: {str(e)}")
 
 
-@HB.on_callback_query()
-async def cb_data(bot, update):
-    # Other parts of your code remain unchanged
 
 @HB.on_callback_query()
 async def cb_data(bot, update):
