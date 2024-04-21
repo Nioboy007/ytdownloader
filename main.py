@@ -1,5 +1,4 @@
-import os
-import youtube_dl
+import os 
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup 
 from pyrogram import Client, filters,emoji
 from pyrogram.types import Message
@@ -69,8 +68,6 @@ async def about_message(bot, update):
 
 
 
-# Other parts of your code remain unchanged
-
 @HB.on_message(filters.regex(VIDEO_REGEX))
 async def ytdl(_, message):
     l = message.text.split()
@@ -87,47 +84,42 @@ async def ytdl(_, message):
     var = message.text
     global url
     url = message.text
-    
-    try:
-        ydl_opts = {'format': 'best'}
-        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-            video_info = ydl.extract_info(url, download=False)
-            video_title = video_info['title']
-            chat_id = message.chat.id
-            thumb = video_info['thumbnail']
-            length = video_info['duration']
-            ythd_url = video_info['formats'][-1]['url']
-            ytlow_url = video_info['formats'][0]['url']
-            
-            thumb_extension = ".jpeg"
-            custom_thumb_filename = f"{video_title}{thumb_extension}"
-            thumb_filename, _ = urllib.request.urlretrieve(thumb, custom_thumb_filename)
-            
-            ythd = ytdlp.streams.Stream(ythd_url)
-            ytlow = ytdlp.streams.Stream(ytlow_url)
-            
-            result_buttons2 = InlineKeyboardMarkup(
-                [[
-                    InlineKeyboardButton('🎬720P ' + ' ⭕️ ', callback_data='high'),
-                    InlineKeyboardButton('🎬 360p ' + '⭕️ ', callback_data='360p')
-                ], [
-                    InlineKeyboardButton('🎧 AUDIO ', callback_data='audio')
-                ], [
-                    InlineKeyboardButton('🖼THUMBNAIL🖼', callback_data='thumbnail')
-                ]]
-            )
-
-            await message.reply_photo(
-                photo=thumb_filename,
-                caption="🎬 TITLE : " + video_title + "\n\n📤 UPLOADED : " + video_info['uploader'] + "\n\n📢 CHANNEL LINK " + f'https://www.youtube.com/channel/{video_info["channel_id"]}',
-                reply_markup=result_buttons2,
-                quote=True,
-            )
-            
-    except Exception as e:
-        print(f"Error occurred: {str(e)}")
+    yt = YouTube(url)
+    chat_id = message.chat.id
+    thumb = yt.thumbnail_url
+    length = yt.length
+    video_title = yt.title
+    thumb_extension = ".jpeg"
+    custom_thumb_filename = f"{video_title}{thumb_extension}"
+    thumb_filename, _ = urllib.request.urlretrieve(thumb, custom_thumb_filename)
+    ythd = yt.streams.get_highest_resolution()
+    ytlow = yt.streams.get_by_resolution(resolution='360p')
+    file = yt.streams.filter(only_audio=True).first()
+    ytaudio = yt.streams.filter(only_audio=True).first()
+    download = ytaudio.download(filename=f"{str(yt.title)}")
+    rename = os.rename(download, f"{str(yt.title)}.mp3")
+    audio_size = f"{int(format_bytes(ytaudio.filesize)[0]):.2f}{format_bytes(ytaudio.filesize)[1]}"
+    hd = f"{int(format_bytes(ythd.filesize)[0]):.2f}{format_bytes(ythd.filesize)[1]}"
+    low = f"{int(format_bytes(ytlow.filesize)[0]):.2f}{format_bytes(ytlow.filesize)[1]}"
 
 
+    result_buttons2 = InlineKeyboardMarkup(
+        [[
+            InlineKeyboardButton('🎬720P ' + ' ⭕️ ' + hd, callback_data='high'),
+            InlineKeyboardButton('🎬 360p ' + '⭕️ ' + low, callback_data='360p')
+        ], [
+            InlineKeyboardButton('🎧 AUDIO ' + '⭕️ ' + audio_size, callback_data='audio')
+        ], [
+            InlineKeyboardButton('🖼THUMBNAIL🖼', callback_data='thumbnail')
+        ]]
+    )
+
+    await message.reply_photo(
+        photo=thumb_filename,
+        caption="🎬 TITLE : " + yt.title + "\n\n📤 UPLOADED : " + yt.author + "\n\n📢 CHANNEL LINK " + f'https://www.youtube.com/channel/{yt.channel_id}',
+        reply_markup=result_buttons2,
+        quote=True,
+    )
 
 @HB.on_callback_query()
 async def cb_data(bot, update):
