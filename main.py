@@ -15,6 +15,29 @@ import urllib.request
 import re
 from helpers.thumbnail import take_screen_shot
 from pytube import Playlist
+from pytube.exceptions import AgeRestrictedError
+from google.oauth2.credentials import Credentials
+
+
+
+# Define your YouTube credentials directly
+YOUTUBE_CREDENTIALS = {
+    "client_id": "840842605914-pjajijhgefeku92f49vlffrsrm52mluq.apps.googleusercontent.com",
+    "client_secret": "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",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "scopes": ["https://www.googleapis.com/auth/youtube.readonly"]
+}
+
+# Function to authenticate with YouTube
+def authenticate_youtube():
+    return Credentials.from_client_id_and_client_secret(
+        client_id=YOUTUBE_CREDENTIALS["client_id"],
+        client_secret=YOUTUBE_CREDENTIALS["client_secret"],
+        token_uri=YOUTUBE_CREDENTIALS["token_uri"],
+        scopes=YOUTUBE_CREDENTIALS["scopes"]
+    )
+
+
 
 START_TEXT, HELP_TEXT, UPLOAD_START, ABOUT_TEXT, START_BUTTONS, result_buttons, HELP_BUTTONS, ABOUT_BUTTONS, SOURCE_TEXT, SOURCE_BUTTONS, result_text = commands()
 
@@ -68,58 +91,65 @@ async def about_message(bot, update):
 
 
 
+# Handler for YouTube video URLs
 @HB.on_message(filters.regex(VIDEO_REGEX))
 async def ytdl(_, message):
-    l = message.text.split()
-    global var
-    global ythd
-    global ytlow
-    global yt
-    global thumb_filename
-    global song
-    global length
-    global file
-    global thumb
-    global ytaudio
-    var = message.text
-    global url
-    url = message.text
-    yt = YouTube(url)
-    chat_id = message.chat.id
-    thumb = yt.thumbnail_url
-    length = yt.length
-    video_title = yt.title
-    thumb_extension = ".jpeg"
-    custom_thumb_filename = f"{video_title}{thumb_extension}"
-    thumb_filename, _ = urllib.request.urlretrieve(thumb, custom_thumb_filename)
-    ythd = yt.streams.get_highest_resolution()
-    ytlow = yt.streams.get_by_resolution(resolution='360p')
-    file = yt.streams.filter(only_audio=True).first()
-    ytaudio = yt.streams.filter(only_audio=True).first()
-    download = ytaudio.download(filename=f"{str(yt.title)}")
-    rename = os.rename(download, f"{str(yt.title)}.mp3")
-    audio_size = f"{int(format_bytes(ytaudio.filesize)[0]):.2f}{format_bytes(ytaudio.filesize)[1]}"
-    hd = f"{int(format_bytes(ythd.filesize)[0]):.2f}{format_bytes(ythd.filesize)[1]}"
-    low = f"{int(format_bytes(ytlow.filesize)[0]):.2f}{format_bytes(ytlow.filesize)[1]}"
+    try:
+        # Authenticate with YouTube
+        creds = authenticate_youtube()
+
+        # Use authenticated credentials for YouTube requests
+        yt = YouTube(message.text, credentials=creds)
+
+        # Extract video information
+        thumb = yt.thumbnail_url
+        length = yt.length
+        video_title = yt.title
+        thumb_extension = ".jpeg"
+        custom_thumb_filename = f"{video_title}{thumb_extension}"
+        thumb_filename, _ = urllib.request.urlretrieve(thumb, custom_thumb_filename)
+        ythd = yt.streams.get_highest_resolution()
+        ytlow = yt.streams.get_by_resolution(resolution='360p')
+        file = yt.streams.filter(only_audio=True).first()
+        ytaudio = yt.streams.filter(only_audio=True).first()
+        download = ytaudio.download(filename=f"{str(yt.title)}")
+        rename = os.rename(download, f"{str(yt.title)}.mp3")
+        audio_size = f"{int(format_bytes(ytaudio.filesize)[0]):.2f}{format_bytes(ytaudio.filesize)[1]}"
+        hd = f"{int(format_bytes(ythd.filesize)[0]):.2f}{format_bytes(ythd.filesize)[1]}"
+        low = f"{int(format_bytes(ytlow.filesize)[0]):.2f}{format_bytes(ytlow.filesize)[1]}"
+
+        # Prepare inline keyboard buttons
+        result_buttons2 = InlineKeyboardMarkup(
+            [[
+                InlineKeyboardButton('🎬720P ' + ' ⭕️ ' + hd, callback_data='high'),
+                InlineKeyboardButton('🎬 360p ' + '⭕️ ' + low, callback_data='360p')
+            ], [
+                InlineKeyboardButton('🎧 AUDIO ' + '⭕️ ' + audio_size, callback_data='audio')
+            ], [
+                InlineKeyboardButton('🖼THUMBNAIL🖼', callback_data='thumbnail')
+            ]]
+        )
+
+        # Send video thumbnail with caption and inline keyboard
+        await message.reply_photo(
+            photo=thumb_filename,
+            caption="🎬 TITLE : " + yt.title + "\n\n📤 UPLOADED : " + yt.author + "\n\n📢 CHANNEL LINK " + f'https://www.youtube.com/channel/{yt.channel_id}',
+            reply_markup=result_buttons2,
+            quote=True,
+        )
+
+    except AgeRestrictedError as e:
+        # Handle age-restricted videos
+        error_message = "This video is age-restricted and cannot be accessed without logging in."
+        print(f"Error occurred: {error_message}")
+        await message.reply_text(error_message)
+    except Exception as e:
+        # Handle other exceptions
+        error_message = f"An error occurred: {str(e)}"
+        print(f"Error occurred: {error_message}")
+        await message.reply_text("An unexpected error occurred while processing the video.")
 
 
-    result_buttons2 = InlineKeyboardMarkup(
-        [[
-            InlineKeyboardButton('🎬720P ' + ' ⭕️ ' + hd, callback_data='high'),
-            InlineKeyboardButton('🎬 360p ' + '⭕️ ' + low, callback_data='360p')
-        ], [
-            InlineKeyboardButton('🎧 AUDIO ' + '⭕️ ' + audio_size, callback_data='audio')
-        ], [
-            InlineKeyboardButton('🖼THUMBNAIL🖼', callback_data='thumbnail')
-        ]]
-    )
-
-    await message.reply_photo(
-        photo=thumb_filename,
-        caption="🎬 TITLE : " + yt.title + "\n\n📤 UPLOADED : " + yt.author + "\n\n📢 CHANNEL LINK " + f'https://www.youtube.com/channel/{yt.channel_id}',
-        reply_markup=result_buttons2,
-        quote=True,
-    )
 
 @HB.on_callback_query()
 async def cb_data(bot, update):
