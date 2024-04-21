@@ -16,7 +16,7 @@ import re
 from helpers.thumbnail import take_screen_shot
 from pytube import Playlist
 
-START_TEXT, HELP_TEXT, ABOUT_TEXT, START_BUTTONS, result_buttons, HELP_BUTTONS, ABOUT_BUTTONS, SOURCE_TEXT, SOURCE_BUTTONS, result_text = commands()
+START_TEXT, HELP_TEXT, UPLOAD_START, ABOUT_TEXT, START_BUTTONS, result_buttons, HELP_BUTTONS, ABOUT_BUTTONS, SOURCE_TEXT, SOURCE_BUTTONS, result_text = commands()
 
 
 
@@ -201,7 +201,6 @@ async def ytdl(_, message):
 
 @HB.on_callback_query()
 async def cb_data(bot, update):
-    UPLOAD_START = " <bold>Upload STARTED...</bold>"
    
     if update.data == 'high':
         try:
