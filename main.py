@@ -162,7 +162,6 @@ async def ytdl(_, message):
    chat_id =message.chat.id
    thumb = yt.thumbnail_url
    duration_in_seconds = yt.length
-print("Duration of the video:", duration_in_seconds, "seconds")
    video_title = yt.title
    thumb_extension = ".jpeg"
    custom_thumb_filename = f"{video_title}{thumb_extension}"
@@ -176,6 +175,8 @@ print("Duration of the video:", duration_in_seconds, "seconds")
    audio_size = f"{int(format_bytes(ytaudio.filesize)[0]):.2f}{format_bytes(ytaudio.filesize)[1]}"
    hd = f"{int(format_bytes(ythd.filesize)[0]):.2f}{format_bytes(ythd.filesize)[1]}"
    low = f"{int(format_bytes(ytlow.filesize)[0]):.2f}{format_bytes(ytlow.filesize)[1]}"
+    
+    print("Duration of the video:", duration_in_seconds, "seconds")
    
    
    result_buttons2 = InlineKeyboardMarkup(
