@@ -249,19 +249,29 @@ async def cb_data(bot, update):
         await update.message.delete()
 
 
+import requests
+
 @HB.on_message(filters.regex(PLAYLIST_REGEX))
 async def ytdl(_, update):
-   purl=update.text
+   purl = update.text
    pyt = Playlist(purl)
   
    for video in pyt.videos:
-    phd =video.streams.get_highest_resolution()
-    
-    await  HB.send_video(
-            chat_id = update.chat.id, 
-            caption=(f"⭕️ PLAYLIST : "+ pyt.title + "\n📥 DOWNLOADED " + "\n✅ JOIN @TELSABOTS" ),
-            video = phd.download(),
-            
-    )
+       phd = video.streams.get_highest_resolution()
+       
+       # Download thumbnail
+       thumbnail_url = video.thumbnail_url
+       thumbnail_response = requests.get(thumbnail_url)
+       thumbnail_data = thumbnail_response.content
+
+       # Send video and thumbnail to Telegram
+       await HB.send_video(
+           chat_id=update.chat.id, 
+           caption=(f"⭕️ PLAYLIST: {pyt.title}\n📥 DOWNLOADED\n✅ JOIN @TELSABOTS"),
+           video=phd.download(),
+           thumb=thumbnail_data
+       )
+
+
 print("Private Botz On the Run HOHOHO *LOL 😂")
 HB.run()
